@@ -30,14 +30,15 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3) {
-       printf("Command line args should be multicast group and port\n");
-       printf("(e.g. for SSDP, `sender 239.255.255.250 1900`)\n");
+    if (argc != 4) {
+       printf("Command line args should be multicast group interface ip and port\n");
+       printf("(e.g. for SSDP, `sender 239.255.255.250 192.168.1.1 1900`)\n");
        return 1;
     }
 
     char* group = argv[1]; // e.g. 239.255.255.250 for SSDP
-    int port = atoi(argv[2]); // 0 if error, which is an invalid port
+    char* iface = argv[2];
+    int port = atoi(argv[3]); // 0 if error, which is an invalid port
 
     // !!! If test requires, make these configurable via args
     //
@@ -62,6 +63,11 @@ int main(int argc, char *argv[])
         perror("socket");
         return 1;
     }
+	
+	struct sockaddr_in localaddr = { 0 };
+    localaddr.sin_family = AF_INET;
+    localaddr.sin_addr.s_addr = inet_addr(iface);
+    bind(fd, (struct sockaddr*)&localaddr, sizeof(localaddr));
 
     // set up destination address
     //
