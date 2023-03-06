@@ -1,0 +1,1 @@
+docker run --rm -it -p 3000:3000/udp --name udp-tester listener:1.0 bash

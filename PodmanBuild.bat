@@ -1,0 +1,1 @@
+podman build -t listener:1.0 .
